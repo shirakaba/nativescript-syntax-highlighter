@@ -1,6 +1,6 @@
 export declare class Syntaxhighlighter {
     private _highlightr;
     constructor();
-    setThemeTo(theme: string): SyntaxHighlighter;
+    setThemeTo(theme: string): Syntaxhighlighter;
     highlightCodeAs(code: string, lang: string): NSAttributedString;
 }
