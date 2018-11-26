@@ -1,4 +1,4 @@
-export class Syntaxhighlighter {
+export class SyntaxHighlighter {
 	private _highlightr: Highlightr;
 
 	constructor() {
@@ -10,7 +10,7 @@ export class Syntaxhighlighter {
 	}
 
 	/** Not chainable in native, but I'll arrange it so in NativeScript for convenience. */
-	setThemeTo(name: string): Syntaxhighlighter {
+	setThemeTo(name: string): SyntaxHighlighter {
 		this._highlightr.setThemeTo(name);
 		return this;
 	}

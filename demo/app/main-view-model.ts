@@ -2,11 +2,12 @@ import { Observable } from 'tns-core-modules/data/observable';
 import { Page, View } from "tns-core-modules/ui/page";
 import { TextField } from "tns-core-modules/ui/text-field";
 import { TextView } from "tns-core-modules/ui/text-view";
-import { Syntaxhighlighter } from 'nativescript-syntaxhighlighter';
+import { SyntaxHighlighter } from 'nativescript-syntax-highlighter';
+
 import { FlexboxLayout } from 'tns-core-modules/ui/layouts/flexbox-layout/flexbox-layout';
 
 export class HelloWorldModel extends Observable {
-  private syntaxhighlighter: Syntaxhighlighter = new Syntaxhighlighter();
+  private syntaxHighlighter: SyntaxHighlighter = new SyntaxHighlighter();
   private textView: TextView;
   private textField: TextField;
 
@@ -26,7 +27,7 @@ export class HelloWorldModel extends Observable {
         case "tv":
             this.textView = child as TextView;
             console.log("this.textView assigned!", this.textView);
-            const attributedStringJS: NSAttributedString = this.syntaxhighlighter.highlightAsFastRender("const a = 5;", "js");
+            const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
             console.log("this.textView.ios:", this.textView.ios);
             (this.textView.ios as UITextView).attributedText = attributedStringJS;
             // textView.on("textChange", (argstv) => {
@@ -36,7 +37,7 @@ export class HelloWorldModel extends Observable {
         case "tf":
             this.textField = child as TextField;
             console.log("this.textField assigned!", this.textField);
-            const attributedStringSwift: NSAttributedString = this.syntaxhighlighter.highlightAsFastRender("let a = 5;", "swift");
+            const attributedStringSwift: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("let a = 5;", "swift");
             console.log("this.textField.ios:", this.textField.ios);
             (this.textField.ios as UITextField).attributedText = attributedStringSwift;
             // textField.on("textChange", (argstv) => {

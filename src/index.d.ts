@@ -2,9 +2,9 @@
 // export * from './syntaxhighlighter.ios';
 // export { Syntaxhighlighter } from './syntaxhighlighter.ios';
 
-export declare class Syntaxhighlighter {
+export declare class SyntaxHighlighter {
     private _highlightr;
     constructor();
-    setThemeTo(name: string): Syntaxhighlighter;
+    setThemeTo(name: string): SyntaxHighlighter;
     highlightAsFastRender(code: string, languageName?: string|null, fastRender?: boolean): NSAttributedString;
 }
