@@ -2,7 +2,7 @@
     "name": "nativescript-syntax-highlighter",
     "version": "1.0.0",
     "description": "Your awesome NativeScript plugin.",
-    "main": "syntaxhighlighter",
+    "main": "syntax-highlighter",
     "typings": "index.d.ts",
     "nativescript": {
         "platforms": {
