@@ -7,7 +7,7 @@ declare class Highlightr extends NSObject {
 	// constructor(o: { });
 	// init(): this;
 
-	setThemeTo(theme: string): void;
+	setThemeTo(name: string): void;
 
-	highlightCodeAs(code: string, lang: string): NSAttributedString;
+	highlightAsFastRender(code: string, lang: string|null, fastRender: boolean): NSAttributedString;
 }

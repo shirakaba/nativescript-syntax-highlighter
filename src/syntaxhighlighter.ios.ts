@@ -2,17 +2,21 @@ export class Syntaxhighlighter {
 	private _highlightr: Highlightr;
 
 	constructor() {
-		this._highlightr = Highlightr.alloc().init();
+		// this._highlightr = Highlightr.alloc().init();
+		// this._highlightr = Highlightr.alloc();
+		//@ts-ignore
+		this._highlightr = Highlightr.alloc().initWithHighlightPath(null);
 		console.log('syntaxHighlighter', this._highlightr);
 	}
 
 	/** Not chainable in native, but I'll arrange it so in NativeScript for convenience. */
-	setThemeTo(theme: string): Syntaxhighlighter {
-		this._highlightr.setThemeTo(theme);
+	setThemeTo(name: string): Syntaxhighlighter {
+		this._highlightr.setThemeTo(name);
 		return this;
 	}
 
-	highlightCodeAs(code: string, lang: string): NSAttributedString {
-		return this._highlightr.highlightCodeAs(code, lang);
+	// FIXME: according to Highlightr.swift, method name may instead be: highlightCodeAsFastRender()
+	highlightAsFastRender(code: string, languageName: string|null = null, fastRender: boolean = true): NSAttributedString {
+		return this._highlightr.highlightAsFastRender(code, languageName, fastRender);
 	}
 }
