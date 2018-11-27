@@ -1,5 +1,6 @@
 *.map
 *.ts
+syntax-highlighter.ios.ts
 !*.d.ts
 tsconfig.json
 scripts/*

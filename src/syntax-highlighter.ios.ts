@@ -1,4 +1,5 @@
 export class SyntaxHighlighter {
+	//@ts-ignore
 	private _highlightr: Highlightr;
 
 	constructor() {
