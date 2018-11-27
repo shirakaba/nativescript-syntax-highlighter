@@ -6,8 +6,9 @@ declare class CodeAttributedString extends NSTextStorage {
     
     highlightDelegate: HighlightDelegate;
 
-	constructor(o: { highlightr?: Highlightr|null });
-    initWithHighlightr(highlightr?: Highlightr|null): this;
+    /* Should exist, but doesn't seem to work. */
+	// constructor(o: { highlightr?: Highlightr|null });
+    // initWithHighlightr(highlightr?: Highlightr|null): this;
     
     constructor();
     init(): this;
@@ -15,7 +16,7 @@ declare class CodeAttributedString extends NSTextStorage {
     language: string|null;
 
     highlightRange(range: NSRange): void;
-    
+
     setupListeners(): void;
 }
 

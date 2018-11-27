@@ -2,17 +2,20 @@ import { Observable } from 'tns-core-modules/data/observable';
 import { Page, View } from "tns-core-modules/ui/page";
 import { TextField } from "tns-core-modules/ui/text-field";
 import { TextView } from "tns-core-modules/ui/text-view";
-import { SyntaxHighlighter } from 'nativescript-syntax-highlighter';
+import { SyntaxHighlighter, CodeAttributedStringWrapper } from 'nativescript-syntax-highlighter';
 
 import { FlexboxLayout } from 'tns-core-modules/ui/layouts/flexbox-layout/flexbox-layout';
 
 export class HelloWorldModel extends Observable {
   private syntaxHighlighter: SyntaxHighlighter = new SyntaxHighlighter();
+  private codeAttributedStringWrapper: CodeAttributedStringWrapper = new CodeAttributedStringWrapper();
   private textView: TextView;
   private textField: TextField;
 
   constructor() {
     super();
+
+    console.log(this.codeAttributedStringWrapper);
   }
 
   navigatingTo(args) {
