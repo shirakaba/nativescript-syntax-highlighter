@@ -2,7 +2,8 @@
   xmlns:ui="nativescript-syntaxhighlighter">
   <FlexboxLayout flexDirection="column" alignItems="center">
     <!-- <Label text="{{ message }}" class="t-20 text-center c-black" textWrap="true"/> -->
-    <TextField id="tf" width="100%" height="50%" loaded="{{ onComponentLoaded }}" ></TextField>
-    <TextView id="tv" width="100%" height="50%" loaded="{{ onComponentLoaded }}" ></TextView>
+    <TextField id="tf" width="100%" height="34%" loaded="{{ onComponentLoaded }}" ></TextField>
+    <TextView id="tv1" width="100%" height="33%" loaded="{{ onComponentLoaded }}" ></TextView>
+    <TextView id="tv2" width="100%" height="33%" loaded="{{ onComponentLoaded }}" ></TextView>
   </FlexboxLayout>
 </Page>

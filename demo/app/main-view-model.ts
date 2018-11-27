@@ -27,7 +27,17 @@ export class HelloWorldModel extends Observable {
     content.eachLayoutChild((child: View, isLast: boolean) => {
       console.log(`layoutChild:`, child);
       switch(child.id){
-        case "tv":
+        case "tf":
+            this.textField = child as TextField;
+            console.log("this.textField assigned!", this.textField);
+            const attributedStringSwift: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("let a = 5;", "swift");
+            console.log("this.textField.ios:", this.textField.ios);
+            (this.textField.ios as UITextField).attributedText = attributedStringSwift;
+            // textField.on("textChange", (argstv) => {
+            //     console.dir(argstv);
+            // });
+            break;
+        case "tv1":
             this.textView = child as TextView;
             console.log("this.textView assigned!", this.textView);
             const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
@@ -37,13 +47,13 @@ export class HelloWorldModel extends Observable {
             //     console.dir(argstv);
             // });
             break;
-        case "tf":
-            this.textField = child as TextField;
-            console.log("this.textField assigned!", this.textField);
-            const attributedStringSwift: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("let a = 5;", "swift");
-            console.log("this.textField.ios:", this.textField.ios);
-            (this.textField.ios as UITextField).attributedText = attributedStringSwift;
-            // textField.on("textChange", (argstv) => {
+        case "tv2":
+            this.textView = child as TextView;
+            console.log("this.textView assigned!", this.textView);
+            // const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
+            // console.log("this.textView.ios:", this.textView.ios);
+            // (this.textView.ios as UITextView).attributedText = attributedStringJS;
+            // textView.on("textChange", (argstv) => {
             //     console.dir(argstv);
             // });
             break;
