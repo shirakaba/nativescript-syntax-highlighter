@@ -1,5 +1,5 @@
 import { Observable } from 'tns-core-modules/data/observable';
-import { Page, View } from "tns-core-modules/ui/page";
+import { Page, View, ContentView } from "tns-core-modules/ui/page";
 import { TextField } from "tns-core-modules/ui/text-field";
 import { TextView } from "tns-core-modules/ui/text-view";
 import { SyntaxHighlighter, CodeAttributedStringWrapper } from 'nativescript-syntax-highlighter';
@@ -16,7 +16,7 @@ export class HelloWorldModel extends Observable {
   constructor() {
     super();
 
-    console.log(this.codeAttributedStringWrapper);
+    // console.log(this.codeAttributedStringWrapper);
   }
 
   navigatingTo(args) {
@@ -49,18 +49,65 @@ export class HelloWorldModel extends Observable {
             // });
             break;
         case "tv2":
-            this.textView2 = child as TextView;
-            console.log("this.textView2 assigned!", this.textView2);
-            // const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
-            // console.log("this.textView2.ios:", this.textView2.ios);
-            // (this.textView.ios as UITextView).attributedText = attributedStringJS;
-            // textView.on("textChange", (argstv) => {
-            //     console.dir(argstv);
-            // });
+            console.log(`Got tv2. page.ios.view:`, page.ios.view);
+            // console.log(`Got tv2. page.ios.view:`, page.ios.view);
+            console.log(`Got tv2. child:`, child as ContentView);
+            
+            let uiView: UIView = (child as ContentView).ios.view;
+            let frame = { origin: { x:0, y:0 }, size: { width: uiView.frame.size.width, height: uiView.frame.size.height } };
+
+            let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
+            textStorage.language = "js";
+            let layoutManager: NSLayoutManager = NSLayoutManager.alloc().init();
+            textStorage.addLayoutManager(layoutManager);
+
+            let textContainer = NSTextContainer.alloc().initWithSize(uiView.frame.size);
+            layoutManager.addTextContainer(textContainer);
+
+            let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(frame, textContainer);
+            // this.textView2 = textView2;
+            //@ts-ignore
+            textView2.autoresizingMask = UIView.UIViewAutoresizing.UIViewAutoresizingFlexibleHeight;
+
+            let parent = child.parent;
+            // parent._removeView(child);
+            parent.ios.view = textView2;
+            // parent._addView(textView2);
+
+            
             break;
       }
       return true;
     })
+  }
+
+  onCreatingView(args){
+    console.log(`onCreatingView!`);
+    const page: Page = <Page> args.object;
+    console.log(`onCreatingView args.object!`, page);
+    console.log(`onCreatingView args.object.ios.view!`, args.object.view);
+
+    // this.textView2 = child as TextView;
+    // console.log("this.textView2 assigned!", this.textView2);
+
+    // let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
+    // textStorage.language = "js";
+    // let layoutManager: NSLayoutManager = NSLayoutManager.alloc().init();
+    // textStorage.addLayoutManager(layoutManager);
+
+    // let textContainer = NSTextContainer.alloc().initWithSize(CGSizeMake(300, 300));
+    // layoutManager.addTextContainer(textContainer);
+
+    // let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(CGRectMake(0, 0, 300, 300), textContainer);
+
+    // (this.textView2.ios as UITextView).textContainer = textContainer;
+
+    // const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
+    // console.log("this.textView2.ios:", this.textView2.ios);
+    // (this.textView.ios as UITextView).attributedText = attributedStringJS;
+    // textView.on("textChange", (argstv) => {
+    //     console.dir(argstv);
+    // });
   }
 
   // onComponentLoaded(args){
