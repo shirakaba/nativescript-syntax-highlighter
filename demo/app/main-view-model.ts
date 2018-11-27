@@ -53,11 +53,16 @@ export class HelloWorldModel extends Observable {
             // console.log(`Got tv2. page.ios.view:`, page.ios.view);
             console.log(`Got tv2. child:`, child as ContentView);
             
-            let uiView: UIView = (child as ContentView).ios.view;
+            // let uiView: UIView = (child as ContentView).ios.view;
+            var uiView: UIView = page.ios.view as UIView;
+            console.log(`subViews`, uiView.subviews);
+            console.log(`subViews[0]`, uiView.subviews[0]);
+            uiView = uiView.subviews[0];
+
             let frame = { origin: { x:0, y:0 }, size: { width: uiView.frame.size.width, height: uiView.frame.size.height } };
 
             let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
-            textStorage.language = "js";
+            textStorage.language = "Swift";
             let layoutManager: NSLayoutManager = NSLayoutManager.alloc().init();
             textStorage.addLayoutManager(layoutManager);
 
@@ -65,14 +70,20 @@ export class HelloWorldModel extends Observable {
             layoutManager.addTextContainer(textContainer);
 
             let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(frame, textContainer);
+            
             // this.textView2 = textView2;
-            //@ts-ignore
-            textView2.autoresizingMask = UIView.UIViewAutoresizing.UIViewAutoresizingFlexibleHeight;
+            
+            /* Doesn't work */
+            // textView2.autoresizingMask = UIView.UIViewAutoresizing.UIViewAutoresizingFlexibleHeight;
 
-            let parent = child.parent;
-            // parent._removeView(child);
-            parent.ios.view = textView2;
-            // parent._addView(textView2);
+            uiView.addSubview(textView2); // TODO: remove previous one
+            
+            
+
+            // let parent = child.parent;
+            // // parent._removeView(child);
+            // parent.ios.view = textView2;
+            // // parent._addView(textView2);
 
             
             break;
