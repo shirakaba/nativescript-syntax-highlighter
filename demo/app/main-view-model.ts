@@ -9,8 +9,9 @@ import { FlexboxLayout } from 'tns-core-modules/ui/layouts/flexbox-layout/flexbo
 export class HelloWorldModel extends Observable {
   private syntaxHighlighter: SyntaxHighlighter = new SyntaxHighlighter();
   private codeAttributedStringWrapper: CodeAttributedStringWrapper = new CodeAttributedStringWrapper();
-  private textView: TextView;
   private textField: TextField;
+  private textView1: TextView;
+  private textView2: TextView;
 
   constructor() {
     super();
@@ -38,20 +39,20 @@ export class HelloWorldModel extends Observable {
             // });
             break;
         case "tv1":
-            this.textView = child as TextView;
-            console.log("this.textView assigned!", this.textView);
+            this.textView1 = child as TextView;
+            console.log("this.textView1 assigned!", this.textView1);
             const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
-            console.log("this.textView.ios:", this.textView.ios);
-            (this.textView.ios as UITextView).attributedText = attributedStringJS;
+            console.log("this.textView1.ios:", this.textView1.ios);
+            (this.textView1.ios as UITextView).attributedText = attributedStringJS;
             // textView.on("textChange", (argstv) => {
             //     console.dir(argstv);
             // });
             break;
         case "tv2":
-            this.textView = child as TextView;
-            console.log("this.textView assigned!", this.textView);
+            this.textView2 = child as TextView;
+            console.log("this.textView2 assigned!", this.textView2);
             // const attributedStringJS: NSAttributedString = this.syntaxHighlighter.highlightAsFastRender("const a = 5;", "js");
-            // console.log("this.textView.ios:", this.textView.ios);
+            // console.log("this.textView2.ios:", this.textView2.ios);
             // (this.textView.ios as UITextView).attributedText = attributedStringJS;
             // textView.on("textChange", (argstv) => {
             //     console.dir(argstv);
