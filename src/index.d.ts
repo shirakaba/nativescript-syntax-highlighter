@@ -6,17 +6,26 @@ export declare class SyntaxHighlighter {
     private readonly _highlightr;
     constructor();
     setThemeTo(name: string): SyntaxHighlighter;
-    highlightAsFastRender(code: string, languageName?: string|null, fastRender?: boolean): NSAttributedString;
+    highlightAsFastRender(code: string, languageName?: string | null, fastRender?: boolean): NSAttributedString;
 }
 
 export declare class CodeAttributedStringWrapper {
-    private readonly _highlightr: Highlightr;
     readonly _codeAttributedString: CodeAttributedString;
-    constructor(_highlightr?: Highlightr);
+    constructor();
     addLayoutManager(layoutManager: NSLayoutManager): CodeAttributedStringWrapper;
     setLanguage(language: string | null): CodeAttributedStringWrapper;
     setHighlightDelegate(highlightDelegate: HighlightDelegate | null): CodeAttributedStringWrapper;
     getString(): string;
     highlightRange(range: NSRange): void;
     setupListeners(): void;
+    setThemeTo(name: string): CodeAttributedStringWrapper;
 }
+
+// export interface HighlightDelegate extends NSObjectProtocol {
+//     shouldHighlightRange?(range: NSRange): boolean;
+//     didHighlightRange?(range: NSRange): void;
+// }
+
+// export declare var HighlightDelegate: {
+// 	prototype: HighlightDelegate;
+// };

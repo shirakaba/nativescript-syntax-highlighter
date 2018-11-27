@@ -6,7 +6,6 @@ export class SyntaxHighlighter {
 		console.log('syntaxHighlighter', this._highlightr);
 	}
 
-	/** Not chainable in native, but I'll arrange it so in NativeScript for convenience. */
 	setThemeTo(name: string): SyntaxHighlighter {
 		this._highlightr.setThemeTo(name);
 		return this;
@@ -20,26 +19,21 @@ export class SyntaxHighlighter {
 export class CodeAttributedStringWrapper {
     readonly _codeAttributedString: CodeAttributedString;
 
-	constructor(
-        public readonly _highlightr: Highlightr = Highlightr.alloc().initWithHighlightPath(null)
-    ) {
+	constructor() {
 		this._codeAttributedString = CodeAttributedString.alloc().init();
 		console.log('CodeAttributedString', this._codeAttributedString);
 	}
 
-	/** Not chainable in native, but I'll arrange it so in NativeScript for convenience. */
 	addLayoutManager(layoutManager: NSLayoutManager): CodeAttributedStringWrapper {
 		this._codeAttributedString.addLayoutManager(layoutManager);
 		return this;
     }
     
-    /** Not chainable in native, but I'll arrange it so in NativeScript for convenience. */
     setLanguage(language: string|null): CodeAttributedStringWrapper {
         this._codeAttributedString.language = language;
         return this;
     }
 
-    /** Not chainable in native, but I'll arrange it so in NativeScript for convenience. */
     setHighlightDelegate(highlightDelegate: HighlightDelegate|null): CodeAttributedStringWrapper {
         this._codeAttributedString.highlightDelegate = highlightDelegate!;
         return this;
@@ -55,5 +49,10 @@ export class CodeAttributedStringWrapper {
     
     setupListeners(): void {
         this._codeAttributedString.setupListeners();
-    }
+	}
+
+	setThemeTo(name: string): CodeAttributedStringWrapper {
+		this._codeAttributedString.highlightr.setThemeTo(name);
+		return this;
+	}
 }

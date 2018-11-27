@@ -5,6 +5,8 @@ declare class CodeAttributedString extends NSTextStorage {
     static new(): CodeAttributedString; // inherited from NSObject
     
     highlightDelegate: HighlightDelegate;
+    
+    readonly highlightr: Highlightr;
 
     /* Should exist, but doesn't seem to work. */
 	// constructor(o: { highlightr?: Highlightr|null });
