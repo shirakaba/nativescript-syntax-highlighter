@@ -8,7 +8,7 @@ declare class Highlightr extends NSObject {
 	// init(): this;
 	initWithHighlightPath(path?: string|null): this;
 
-	setThemeTo(name: string): void;
+	setThemeTo(name: string): boolean;
 
 	highlightAsFastRender(code: string, lang: string|null, fastRender: boolean): NSAttributedString;
 }

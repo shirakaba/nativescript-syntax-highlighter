@@ -6,9 +6,8 @@ export class SyntaxHighlighter {
 		console.log('syntaxHighlighter', this._highlightr);
 	}
 
-	setThemeTo(name: string): SyntaxHighlighter {
-		this._highlightr.setThemeTo(name);
-		return this;
+	setThemeTo(name: string): boolean {
+		return this._highlightr.setThemeTo(name);
 	}
 
 	highlightAsFastRender(code: string, languageName: string|null = null, fastRender: boolean = true): NSAttributedString {
