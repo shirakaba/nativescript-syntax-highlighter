@@ -57,26 +57,28 @@ export class HelloWorldModel extends Observable {
             var uiView: UIView = page.ios.view as UIView;
             console.log(`subViews`, uiView.subviews);
             console.log(`subViews[0]`, uiView.subviews[0]);
-            uiView = uiView.subviews[0];
+            let viewPlaceholder = uiView.subviews[0];
 
-            let frame = { origin: { x:0, y:0 }, size: { width: uiView.frame.size.width, height: uiView.frame.size.height } };
+            let frame = { origin: { x:0, y:0 }, size: { width: viewPlaceholder.frame.size.width, height: viewPlaceholder.frame.size.height } };
 
+            this.codeAttributedStringWrapper.setThemeTo("Pojoaque");
             let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
-            textStorage.language = "Swift";
+            // textStorage.language = "Swift".toLowerCase();
+            textStorage.language = "javascript".toLowerCase();
             let layoutManager: NSLayoutManager = NSLayoutManager.alloc().init();
             textStorage.addLayoutManager(layoutManager);
 
-            let textContainer = NSTextContainer.alloc().initWithSize(uiView.frame.size);
+            let textContainer = NSTextContainer.alloc().initWithSize(viewPlaceholder.frame.size);
             layoutManager.addTextContainer(textContainer);
 
-            let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(frame, textContainer);
+            let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(viewPlaceholder.bounds, textContainer);
             
             // this.textView2 = textView2;
             
             /* Doesn't work */
             // textView2.autoresizingMask = UIView.UIViewAutoresizing.UIViewAutoresizingFlexibleHeight;
 
-            uiView.addSubview(textView2); // TODO: remove previous one
+            viewPlaceholder.addSubview(textView2); // TODO: remove previous one
             
             
 
