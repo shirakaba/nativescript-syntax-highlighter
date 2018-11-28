@@ -61,7 +61,13 @@ export class HelloWorldModel extends Observable {
 
             let frame = { origin: { x:0, y:0 }, size: { width: viewPlaceholder.frame.size.width, height: viewPlaceholder.frame.size.height } };
 
-            this.codeAttributedStringWrapper.setThemeTo("Pojoaque");
+            /*
+              JavaScript error:
+              file:///app/tns_modules/nativescript-syntax-highlighter/syntax-highlighter.js:46:46: JS ERROR TypeError: undefined is not an object (evaluating 'this._codeAttributedString.highlightr.setThemeTo')
+              (CoreFoundation) *** Terminating app due to uncaught exception 'NativeScript encountered a fatal error: TypeError: undefined is not an object (evaluating 'this._codeAttributedString.highlightr.setThemeTo')
+            */
+            // this.codeAttributedStringWrapper.setThemeTo("Pojoaque"); // Doesn't appear
+
             let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
             // textStorage.language = "Swift".toLowerCase();
             textStorage.language = "javascript".toLowerCase();
@@ -72,6 +78,13 @@ export class HelloWorldModel extends Observable {
             layoutManager.addTextContainer(textContainer);
 
             let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(viewPlaceholder.bounds, textContainer);
+
+            /* Swift */
+            // textView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+            // textView.autocorrectionType = UITextAutocorrectionType.no
+            // textView.autocapitalizationType = UITextAutocapitalizationType.none
+            // textView.textColor = UIColor(white: 0.8, alpha: 1.0)
+            // textView.inputAccessoryView = textToolbar
             
             // this.textView2 = textView2;
             
