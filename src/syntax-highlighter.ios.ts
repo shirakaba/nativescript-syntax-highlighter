@@ -3,7 +3,6 @@ export class SyntaxHighlighter {
 
 	constructor() {
 		this._highlightr = Highlightr.alloc().initWithHighlightPath(null);
-		console.log('syntaxHighlighter', this._highlightr);
 	}
 
 	setThemeTo(name: string): boolean {
@@ -20,7 +19,6 @@ export class CodeAttributedStringWrapper {
 
 	constructor(highlightr: Highlightr = Highlightr.alloc().initWithHighlightPath(null)) {
 		this._codeAttributedString = CodeAttributedString.alloc().initWithHighlightr(highlightr);
-		console.log('CodeAttributedString', this._codeAttributedString);
 	}
 
 	addLayoutManager(layoutManager: NSLayoutManager): CodeAttributedStringWrapper {
