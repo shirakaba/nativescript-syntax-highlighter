@@ -78,12 +78,14 @@ export class HelloWorldModel extends Observable {
             layoutManager.addTextContainer(textContainer);
 
             let textView2: UITextView = UITextView.alloc().initWithFrameTextContainer(viewPlaceholder.bounds, textContainer);
-
+            
+            textView2.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+            textView2.autocorrectionType = UITextAutocorrectionType.No;
+            // this.textView1.autocapitalizationType = "none";
+            textView2.autocapitalizationType = UITextAutocapitalizationType.None;
+            textView2.textColor = UIColor.alloc().initWithWhiteAlpha(0.8, 1.0);
+            
             /* Swift */
-            // textView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-            // textView.autocorrectionType = UITextAutocorrectionType.no
-            // textView.autocapitalizationType = UITextAutocapitalizationType.none
-            // textView.textColor = UIColor(white: 0.8, alpha: 1.0)
             // textView.inputAccessoryView = textToolbar
             
             // this.textView2 = textView2;
