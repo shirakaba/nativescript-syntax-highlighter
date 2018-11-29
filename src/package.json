@@ -38,10 +38,10 @@
         "email": "youremail@yourdomain.com"
     },
     "bugs": {
-        "url": "https://github.com/shirakaba/nativescript-syntaxhighlighter/issues"
+        "url": "https://github.com/shirakaba/nativescript-syntax-highlighter/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/shirakaba/nativescript-syntaxhighlighter",
+    "homepage": "https://github.com/shirakaba/nativescript-syntax-highlighter",
     "readmeFilename": "README.md",
     "devDependencies": {
         "tns-core-modules": "^5.0.1",
