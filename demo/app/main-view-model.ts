@@ -61,17 +61,10 @@ export class HelloWorldModel extends Observable {
 
             let frame = { origin: { x:0, y:0 }, size: { width: viewPlaceholder.frame.size.width, height: viewPlaceholder.frame.size.height } };
 
-            /*
-              JavaScript error:
-              file:///app/tns_modules/nativescript-syntax-highlighter/syntax-highlighter.js:46:46: JS ERROR TypeError: undefined is not an object (evaluating 'this._codeAttributedString.highlightr.setThemeTo')
-              (CoreFoundation) *** Terminating app due to uncaught exception 'NativeScript encountered a fatal error: TypeError: undefined is not an object (evaluating 'this._codeAttributedString.highlightr.setThemeTo')
-            */
-            // this.codeAttributedStringWrapper.setThemeTo("Pojoaque"); // Doesn't appear
             console.log("highlightr prop:", this.codeAttributedStringWrapper._codeAttributedString.highlightr); // is undefined somehow
-            console.log("_codeAttributedString keys:", Object.keys(this.codeAttributedStringWrapper._codeAttributedString));
-            console.log("_codeAttributedString JSON:", JSON.stringify(this.codeAttributedStringWrapper._codeAttributedString));
-            // console.log("highlightr prop keys:", Object.keys(this.codeAttributedStringWrapper._codeAttributedString.highlightr));
-            // console.log("available themes:", this.codeAttributedStringWrapper._codeAttributedString.highlightr.availableThemes());
+            console.log("available themes:", this.codeAttributedStringWrapper._codeAttributedString.highlightr.availableThemes());
+
+            this.codeAttributedStringWrapper.setThemeTo("Pojoaque"); // Will get shifted to lowercase on native side anyway.
 
             let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
             // textStorage.language = "Swift".toLowerCase();
