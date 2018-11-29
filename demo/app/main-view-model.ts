@@ -67,6 +67,11 @@ export class HelloWorldModel extends Observable {
               (CoreFoundation) *** Terminating app due to uncaught exception 'NativeScript encountered a fatal error: TypeError: undefined is not an object (evaluating 'this._codeAttributedString.highlightr.setThemeTo')
             */
             // this.codeAttributedStringWrapper.setThemeTo("Pojoaque"); // Doesn't appear
+            console.log("highlightr prop:", this.codeAttributedStringWrapper._codeAttributedString.highlightr); // is undefined somehow
+            console.log("_codeAttributedString keys:", Object.keys(this.codeAttributedStringWrapper._codeAttributedString));
+            console.log("_codeAttributedString JSON:", JSON.stringify(this.codeAttributedStringWrapper._codeAttributedString));
+            // console.log("highlightr prop keys:", Object.keys(this.codeAttributedStringWrapper._codeAttributedString.highlightr));
+            // console.log("available themes:", this.codeAttributedStringWrapper._codeAttributedString.highlightr.availableThemes());
 
             let textStorage: CodeAttributedString = this.codeAttributedStringWrapper._codeAttributedString;
             // textStorage.language = "Swift".toLowerCase();
