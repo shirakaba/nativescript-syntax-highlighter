@@ -34,6 +34,8 @@ declare class CodeAttributedString extends NSTextStorage {
     /* Should exist, but doesn't seem to work. */
 	// constructor(o: { highlightr?: Highlightr|null });
     // initWithHighlightr(highlightr?: Highlightr|null): this;
+
+    initWithHighlightr(highlightr): this;
     
     constructor();
     init(): this;

@@ -18,8 +18,8 @@ export class SyntaxHighlighter {
 export class CodeAttributedStringWrapper {
     readonly _codeAttributedString: CodeAttributedString;
 
-	constructor() {
-		this._codeAttributedString = CodeAttributedString.alloc().init();
+	constructor(highlightr: Highlightr = Highlightr.alloc().initWithHighlightPath(null)) {
+		this._codeAttributedString = CodeAttributedString.alloc().initWithHighlightr(highlightr);
 		console.log('CodeAttributedString', this._codeAttributedString);
 	}
 

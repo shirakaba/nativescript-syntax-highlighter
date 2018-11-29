@@ -11,7 +11,7 @@ export declare class SyntaxHighlighter {
 
 export declare class CodeAttributedStringWrapper {
     readonly _codeAttributedString: CodeAttributedString;
-    constructor();
+    constructor(highlightr?: Highlightr);
     addLayoutManager(layoutManager: NSLayoutManager): CodeAttributedStringWrapper;
     setLanguage(language: string | null): CodeAttributedStringWrapper;
     setHighlightDelegate(highlightDelegate: HighlightDelegate | null): CodeAttributedStringWrapper;
