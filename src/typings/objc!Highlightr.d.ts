@@ -10,7 +10,9 @@ declare class Highlightr extends NSObject {
 
 	// constructor(o: { });
 	// init(): this;
-	initWithHighlightPath(path?: string|null): this;
+    initWithHighlightPath(path?: string|null): this;
+    
+    getThemeBackgroundColour(): UIColor|null;
 
 	setThemeTo(name: string): boolean;
 
