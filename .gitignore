@@ -24,3 +24,7 @@ publish/package
 demo/report/report.html
 demo/report/stats.json
 demo/typings
+!src/platforms/android/assets/app_sources/index.js
+!src/platforms/android/assets/app_sources/worker.js
+!src/platforms/android/assets/app_sources/highlight/highlight.pack.js
+src/platforms/android/*.aar
