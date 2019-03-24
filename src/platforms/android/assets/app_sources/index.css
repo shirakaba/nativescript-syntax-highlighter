@@ -1,0 +1,8 @@
+body, html, pre, code, .container {
+    height: 100%;
+}
+
+
+#output:focus {
+    outline: 0;
+}

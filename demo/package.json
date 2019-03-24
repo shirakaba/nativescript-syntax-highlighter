@@ -1,8 +1,11 @@
 {
   "nativescript": {
-    "id": "uk.co.bottledlogic.nativescript-syntaxhighlighter-demo",
+    "id": "uk.co.bottledlogic.nativescript.syntaxhighlighter.demo",
     "tns-ios": {
       "version": "5.0.0"
+    },
+    "tns-android": {
+      "version": "5.2.1"
     }
   },
   "dependencies": {
