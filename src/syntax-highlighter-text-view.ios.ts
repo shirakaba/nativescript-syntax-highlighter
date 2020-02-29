@@ -91,11 +91,13 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
                 return false;
             }
 
-            if(replacementString === "\t" && owner.suggestedTextToFillOnTabPress !== "" && owner.suggestedTextToFillOnTabPress !== textView.text){
-                return true;
-            } else {
-                textView.text = owner.suggestedTextToFillOnTabPress;
-                return false;
+            if(replacementString === "\t"){
+                if(owner.suggestedTextToFillOnTabPress !== "" && owner.suggestedTextToFillOnTabPress !== textView.text){
+                    return true;
+                } else {
+                    textView.text = owner.suggestedTextToFillOnTabPress;
+                    return false;                    
+                }
             }
 
             // if(owner.textViewShouldChangeTextInRangeReplacementText){
@@ -119,6 +121,16 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
         }
     }
 }
+
+export const returnDismissesKeyboardProperty = new Property<SyntaxHighlighterTextView, boolean>({
+    name: 'returnDismissesKeyboard',
+    defaultValue: false,
+});
+
+export const suggestedTextToFillOnTabPressProperty = new Property<SyntaxHighlighterTextView, string>({
+    name: 'suggestedTextToFillOnTabPress',
+    defaultValue: '',
+});
 
 export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlighterViewBase, TextViewFilePrivate {
     private _delegate: UITextViewDelegateImpl;
@@ -253,17 +265,6 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         }
     }
 }
-
-export const returnDismissesKeyboardProperty = new Property<SyntaxHighlighterTextView, boolean>({
-    name: 'returnDismissesKeyboard',
-    defaultValue: false,
-});
-
-export const suggestedTextToFillOnTabPressProperty = new Property<SyntaxHighlighterTextView, string>({
-    name: 'suggestedTextToFillOnTabPress',
-    defaultValue: '',
-});
-
 
 codeProperty.register(SyntaxHighlighterTextView);
 
