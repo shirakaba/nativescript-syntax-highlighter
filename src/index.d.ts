@@ -17,7 +17,6 @@ export declare const codeProperty: Property<SyntaxHighlighterViewBase, string>;
 export declare const themeProperty: Property<SyntaxHighlighterViewBase, SyntaxHighlighterTheme>;
 export declare const languageNameProperty: Property<SyntaxHighlighterView, string|null>;
 export declare class SyntaxHighlighterView extends View implements SyntaxHighlighterViewBase {
-    private _textView;
     private _highlightr;
     private _codeAttributedString;
     code: string;

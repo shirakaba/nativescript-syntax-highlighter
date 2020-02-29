@@ -106,13 +106,9 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
 
 // export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
 export class SyntaxHighlighterView extends TextView implements SyntaxHighlighterViewBase {
-    /* TODO: stop holding the redundant field, _textView, because when NativeScript Core 
-     *       calls createNativeView(), it'll implicitly populate nativeViewProtected */
-    // nativeViewProtected: UITextView;
     private _delegate: UITextViewDelegateImpl;
     public _isEditing: boolean;
 
-    private _textView: UITextView;
     private _highlightr: Highlightr;
     private _codeAttributedString: CodeAttributedString; // AKA textStorage
     public code: string;
@@ -143,11 +139,11 @@ export class SyntaxHighlighterView extends TextView implements SyntaxHighlighter
         this._textContainer = NSTextContainer.alloc().initWithSize(CGRectZero.size);
         this._layoutManager.addTextContainer(this._textContainer);
     
-        this._textView = UITextView.alloc().initWithFrameTextContainer(CGRectZero, this._textContainer);
-        this._textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-        this._textView.autocorrectionType = UITextAutocorrectionType.No;
-        this._textView.autocapitalizationType = UITextAutocapitalizationType.None;
-        this._textView.textColor = UIColor.alloc().initWithWhiteAlpha(0.8, 1.0);
+        const uiTextView: UITextView = UITextView.alloc().initWithFrameTextContainer(CGRectZero, this._textContainer);
+        uiTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+        uiTextView.autocorrectionType = UITextAutocorrectionType.No;
+        uiTextView.autocapitalizationType = UITextAutocapitalizationType.None;
+        uiTextView.textColor = UIColor.alloc().initWithWhiteAlpha(0.8, 1.0);
 
         /**
          * In the demo, Pojoaque was set as the initial theme, so I'll make that the explicit default.
@@ -156,13 +152,13 @@ export class SyntaxHighlighterView extends TextView implements SyntaxHighlighter
          * @see: https://github.com/raspu/Highlightr/blob/master/Example/Highlightr/SampleCode.swift#L155
          */
         this._codeAttributedString.highlightr.setThemeTo("pojoaque"); // Just making the default explicit.
-        this._textView.backgroundColor = UIColor.alloc().initWithRedGreenBlueAlpha(25/255, 25/255, 25/255, 1.0);
+        uiTextView.backgroundColor = UIColor.alloc().initWithRedGreenBlueAlpha(25/255, 25/255, 25/255, 1.0);
 
         /**
          *
          * @see: https://github.com/NativeScript/NativeScript/blob/864b51232b14a1b6add349f1a19659fa39f9a3a0/nativescript-core/ui/text-view/text-view.ios.ts#L122
          **/
-        return this._textView;
+        return uiTextView;
     }
 
     initNativeView() {
@@ -198,7 +194,7 @@ export class SyntaxHighlighterView extends TextView implements SyntaxHighlighter
     }
 
     [base.codeProperty.setNative](code: string) {
-        this._textView.attributedText = this._highlightr.highlightAsFastRender(code, this.languageName, false);
+        this.nativeViewProtected.attributedText = this._highlightr.highlightAsFastRender(code, this.languageName, false);
     }
 
     [base.languageNameProperty.setNative](lang: string | null) {
@@ -209,16 +205,16 @@ export class SyntaxHighlighterView extends TextView implements SyntaxHighlighter
         this._highlightr.setThemeTo(themeName);
         const nativeTheme = (this._highlightr as any).theme;
         if (nativeTheme && nativeTheme.themeBackgroundColor) {
-            this._textView.backgroundColor = nativeTheme.themeBackgroundColor;
+            this.nativeViewProtected.backgroundColor = nativeTheme.themeBackgroundColor;
         }
     }
 
     public onLayout(left: number, top: number, right: number, bottom: number): void {
         super.onLayout(left, top, right, bottom);
-        this._textView.frame = this.nativeView.bounds;
+        this.nativeViewProtected.frame = this.nativeView.bounds;
         this._textContainer.size.width = this.nativeView.frame.size.width;
         this._textContainer.size.height = this.nativeView.frame.size.height;
-        this._textView.setNeedsLayout();
+        this.nativeViewProtected.setNeedsLayout();
     }
 
     public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
