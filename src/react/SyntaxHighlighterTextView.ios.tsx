@@ -2,13 +2,17 @@ import * as console from "react-nativescript/dist/shared/Logger";
 import * as React from "react";
 import { PropsWithoutForwardedRef } from "react-nativescript/dist/shared/NativeScriptComponentTypings";
 import { SyntaxHighlighterTextView as NativeScriptSyntaxHighlighterTextView } from "../syntax-highlighter-text-view.ios";
-import { RNSFriendly } from "react-nativescript/dist/components/TextBase";
-import { TextView as NativeScriptTextView } from "@nativescript/core/ui/text-view";
 import { TextViewComponentProps, TextView, _TextView } from "react-nativescript/dist/components/TextView";
 import { register } from "react-nativescript/dist/client/ElementRegistry";
 import { Container, HostContext } from "react-nativescript/dist/shared/HostConfigTypes";
+// import { RNSFriendly } from "react-nativescript/dist/components/TextBase";
+// import { TextView as NativeScriptTextView } from "@nativescript/core/ui/text-view";
 
-type SyntaxHighlighterProps = {};
+interface SyntaxHighlighterTextViewProps {
+    code?: string,
+    language?: string,
+    theme?: string,
+};
 
 const elementKey: string = "syntaxHighlighterTextView";
 register(
@@ -28,7 +32,7 @@ interface Props {
 
 export type SyntaxHighlighterTextViewComponentProps<
     E extends NativeScriptSyntaxHighlighterTextView = NativeScriptSyntaxHighlighterTextView
-> = Props /* & typeof _SyntaxHighlighterTextView.defaultProps */ & Partial<SyntaxHighlighterProps> & TextViewComponentProps<E>;
+> = Props /* & typeof _SyntaxHighlighterTextView.defaultProps */ & Partial<SyntaxHighlighterTextViewProps> & TextViewComponentProps<E>;
 
 /**
  * A React wrapper around the NativeScript SyntaxHighlighter component.
@@ -42,6 +46,10 @@ export class _SyntaxHighlighterTextView<
     render() {
         const {
             forwardedRef,
+
+            code,
+            language,
+            theme,
 
             onBlur,
             onFocus,
@@ -71,20 +79,26 @@ export class _SyntaxHighlighterTextView<
         } = this.props;
 
         if(formattedText){
-            console.warn(`formattedText will be ignored in SyntaxHighlighterTextView.`);
+            console.warn(`[SyntaxHighlighterTextView] formattedText will be ignored in SyntaxHighlighterTextView.`);
         }
 
-        if (text && formattedText) {
-            console.warn(`Both text and formattedText provided; shall use text.`);
+        if (text && code) {
+            console.warn(`[SyntaxHighlighterTextView] Both text and code provided; shall use text.`);
         }
+
+        const textContent = {
+            [code ? "code" : "text"]: code || text,
+        };
 
         return React.createElement(
             elementKey,
             {
                 ...rest,
-                text,
+                language,
+                theme,
+                ...textContent,
                 ref: forwardedRef || this.myRef,
-            },
+            } as any,
             children
         );
     }

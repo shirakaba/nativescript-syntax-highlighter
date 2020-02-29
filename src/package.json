@@ -2,8 +2,8 @@
     "name": "nativescript-syntax-highlighter",
     "version": "3.0.0",
     "description": "Your awesome NativeScript plugin.",
-    "main": "syntax-highlighter",
-    "typings": "index.d.ts",
+    "main": "syntax-highlighter-view",
+    "typings": "syntax-highlighter-view.d.ts",
     "nativescript": {
         "platforms": {
             "android": "5.0.0",

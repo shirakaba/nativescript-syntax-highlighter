@@ -1,9 +1,9 @@
 import { layout } from 'tns-core-modules/ui/core/view';
-import * as base from './syntax-highlighter.base';
+import * as base from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
 import { TextView } from "@nativescript/core/ui/text-view";
 import { textProperty } from "@nativescript/core/ui/editable-text-base";
 import { ScrollEventData } from "@nativescript/core/ui/scroll-view";
-import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from './syntax-highlighter.base';
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
 import { ios } from "@nativescript/core/utils/utils";
 
 const editableTextBasePrivate: any = require("@nativescript/core/ui/editable-text-base");
