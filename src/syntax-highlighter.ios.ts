@@ -1,12 +1,117 @@
 import { layout } from 'tns-core-modules/ui/core/view';
 import * as base from './syntax-highlighter.base';
-import { TextViewBase as TextViewBaseCommon, maxLinesProperty } from "@nativescript/core/ui/text-view/text-view-common";
+import { TextView } from "@nativescript/core/ui/text-view";
+import { textProperty } from "@nativescript/core/ui/editable-text-base";
+import { ScrollEventData } from "@nativescript/core/ui/scroll-view";
 import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from './syntax-highlighter.base';
+
+const editableTextBasePrivate: any = require("@nativescript/core/ui/editable-text-base");
+const { _updateCharactersInRangeReplacementString } = editableTextBasePrivate;
 
 global.moduleMerge(base, exports);
 
+import { ios } from "@nativescript/core/utils/utils";
+
+const majorVersion = ios.MajorVersion;
+
+interface TextViewFilePrivate extends TextView {
+    _isEditing: boolean;
+    showText(): void;
+    _refreshHintState(hint: string, text: string): void;
+}
+
+class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
+    public static ObjCProtocols = [UITextViewDelegate];
+
+    private _owner: WeakRef<TextViewFilePrivate>;
+
+    public static initWithOwner(owner: WeakRef<TextViewFilePrivate>): UITextViewDelegateImpl {
+        const impl = <UITextViewDelegateImpl>UITextViewDelegateImpl.new();
+        impl._owner = owner;
+
+        return impl;
+    }
+
+    public textViewShouldBeginEditing(textView: UITextView): boolean {
+        const owner = this._owner.get();
+        if (owner) {
+            owner.showText();
+        }
+
+        return true;
+    }
+
+    public textViewDidBeginEditing(textView: UITextView): void {
+        const owner = this._owner.get();
+        if (owner) {
+            owner._isEditing = true;
+            owner.notify({ eventName: TextView.focusEvent, object: owner });
+        }
+    }
+
+    public textViewDidEndEditing(textView: UITextView) {
+        const owner = this._owner.get();
+        if (owner) {
+            if (owner.updateTextTrigger === "focusLost") {
+                textProperty.nativeValueChange(owner, textView.text);
+            }
+
+            owner._isEditing = false;
+            owner.dismissSoftInput();
+            owner._refreshHintState(owner.hint, textView.text);
+        }
+    }
+
+    public textViewDidChange(textView: UITextView) {
+        const owner = this._owner.get();
+        if (owner) {
+            if (owner.updateTextTrigger === "textChanged") {
+                textProperty.nativeValueChange(owner, textView.text);
+            }
+            owner.requestLayout();
+        }
+    }
+
+    public textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: NSRange, replacementString: string): boolean {
+        const owner = this._owner.get();
+        if (owner) {
+            const delta = replacementString.length - range.length;
+            if (delta > 0) {
+                if (textView.text.length + delta > owner.maxLength) {
+                    return false;
+                }
+            }
+
+            if (owner.formattedText) {
+                _updateCharactersInRangeReplacementString(owner.formattedText, range.location, range.length, replacementString);
+            }
+        }
+
+        return true;
+    }
+
+    public scrollViewDidScroll(sv: UIScrollView): void {
+        const owner = this._owner.get();
+        if (owner) {
+            const contentOffset = owner.nativeViewProtected.contentOffset;
+            owner.notify(<ScrollEventData>{
+                object: owner,
+                eventName: "scroll",
+                scrollX: contentOffset.x,
+                scrollY: contentOffset.y
+            });
+        }
+    }
+}
+
 // export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
-export class SyntaxHighlighterView extends TextViewBaseCommon implements SyntaxHighlighterViewBase {
+export class SyntaxHighlighterView extends TextView implements SyntaxHighlighterViewBase {
+    /* TODO: stop holding the redundant field, _textView, because when NativeScript Core 
+     *       calls createNativeView(), it'll implicitly populate nativeViewProtected */
+    // nativeViewProtected: UITextView;
+    private _delegate: UITextViewDelegateImpl;
+    public _isEditing: boolean;
+
     private _textView: UITextView;
     private _highlightr: Highlightr;
     private _codeAttributedString: CodeAttributedString; // AKA textStorage
@@ -58,6 +163,38 @@ export class SyntaxHighlighterView extends TextViewBaseCommon implements SyntaxH
          * @see: https://github.com/NativeScript/NativeScript/blob/864b51232b14a1b6add349f1a19659fa39f9a3a0/nativescript-core/ui/text-view/text-view.ios.ts#L122
          **/
         return this._textView;
+    }
+
+    initNativeView() {
+        super.initNativeView();
+        // 
+        this._delegate = UITextViewDelegateImpl.initWithOwner(new WeakRef(this));
+    }
+
+    /* Fine as-is */
+    // disposeNativeView() {
+    //     super.disposeNativeView();
+    // }
+
+    // @profile
+    public onLoaded() {
+        super.onLoaded();
+        this.ios.delegate = this._delegate;
+    }
+
+    public onUnloaded() {
+        this.ios.delegate = null;
+        super.onUnloaded();
+    }
+
+    public showText() {
+        // @ts-ignore - fileprivate
+        return super.showText();
+    }
+
+    public _refreshHintState(hint: string, text: string) {
+        // @ts-ignore - fileprivate
+        return super._refreshHintState(hint, text);
     }
 
     [base.codeProperty.setNative](code: string) {
