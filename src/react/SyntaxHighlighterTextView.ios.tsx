@@ -12,6 +12,8 @@ interface SyntaxHighlighterTextViewProps {
     code?: string,
     language?: string,
     theme?: string,
+    returnDismissesKeyboard?: boolean,
+    suggestedTextToFillOnTabPress?: string,
 };
 
 const elementKey: string = "syntaxHighlighterTextView";

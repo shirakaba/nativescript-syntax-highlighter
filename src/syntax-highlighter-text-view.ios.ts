@@ -3,6 +3,7 @@ import * as base from 'nativescript-syntax-highlighter/syntax-highlighter-view.b
 import { TextView } from "@nativescript/core/ui/text-view";
 import { textProperty } from "@nativescript/core/ui/editable-text-base";
 import { ScrollEventData } from "@nativescript/core/ui/scroll-view";
+import { Property, View } from '@nativescript/core/ui/core/view';
 import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
 import { ios } from "@nativescript/core/utils/utils";
 
@@ -22,9 +23,9 @@ interface TextViewFilePrivate extends TextView {
 class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
     public static ObjCProtocols = [UITextViewDelegate];
 
-    private _owner: WeakRef<TextViewFilePrivate>;
+    private _owner: WeakRef<SyntaxHighlighterTextView>;
 
-    public static initWithOwner(owner: WeakRef<TextViewFilePrivate>): UITextViewDelegateImpl {
+    public static initWithOwner(owner: WeakRef<SyntaxHighlighterTextView>): UITextViewDelegateImpl {
         const impl = <UITextViewDelegateImpl>UITextViewDelegateImpl.new();
         impl._owner = owner;
 
@@ -84,6 +85,22 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
             if (owner.formattedText) {
                 _updateCharactersInRangeReplacementString(owner.formattedText, range.location, range.length, replacementString);
             }
+
+            if(replacementString === "\n" && owner.returnDismissesKeyboard){
+                textView.resignFirstResponder();
+                return false;
+            }
+
+            if(replacementString === "\t" && owner.suggestedTextToFillOnTabPress !== "" && owner.suggestedTextToFillOnTabPress !== textView.text){
+                return true;
+            } else {
+                textView.text = owner.suggestedTextToFillOnTabPress;
+                return false;
+            }
+
+            // if(owner.textViewShouldChangeTextInRangeReplacementText){
+            //     return owner.textViewShouldChangeTextInRangeReplacementText(textView, range, replacementString);
+            // }
         }
 
         return true;
@@ -114,6 +131,10 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
     private _layoutManager: NSLayoutManager;
     private _textContainer: NSTextContainer;
     public theme: SyntaxHighlighterTheme;
+
+    public returnDismissesKeyboard: boolean = false;
+    // public textViewShouldChangeTextInRangeReplacementText?: (textView: UITextView, range: NSRange, text: string) => boolean;
+    public suggestedTextToFillOnTabPress: string = "";
 
     createNativeView(): Object {
         /* 
@@ -207,6 +228,14 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         }
     }
 
+    [returnDismissesKeyboardProperty.setNative](value: boolean) {
+        this.returnDismissesKeyboard = value;
+    }
+
+    [suggestedTextToFillOnTabPressProperty.setNative](value: string = "") {
+        this.suggestedTextToFillOnTabPress = value;
+    }
+
     public onLayout(left: number, top: number, right: number, bottom: number): void {
         super.onLayout(left, top, right, bottom);
         this.nativeViewProtected.frame = this.nativeView.bounds;
@@ -225,8 +254,21 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
     }
 }
 
+export const returnDismissesKeyboardProperty = new Property<SyntaxHighlighterTextView, boolean>({
+    name: 'returnDismissesKeyboard',
+    defaultValue: false,
+});
+
+export const suggestedTextToFillOnTabPressProperty = new Property<SyntaxHighlighterTextView, string>({
+    name: 'suggestedTextToFillOnTabPress',
+    defaultValue: '',
+});
+
+
 codeProperty.register(SyntaxHighlighterTextView);
 
 languageNameProperty.register(SyntaxHighlighterTextView);
 
 themeProperty.register(SyntaxHighlighterTextView);
+
+returnDismissesKeyboardProperty.register(SyntaxHighlighterTextView);
