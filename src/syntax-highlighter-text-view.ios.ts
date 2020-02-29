@@ -4,13 +4,12 @@ import { TextView } from "@nativescript/core/ui/text-view";
 import { textProperty } from "@nativescript/core/ui/editable-text-base";
 import { ScrollEventData } from "@nativescript/core/ui/scroll-view";
 import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from './syntax-highlighter.base';
+import { ios } from "@nativescript/core/utils/utils";
 
 const editableTextBasePrivate: any = require("@nativescript/core/ui/editable-text-base");
 const { _updateCharactersInRangeReplacementString } = editableTextBasePrivate;
 
 global.moduleMerge(base, exports);
-
-import { ios } from "@nativescript/core/utils/utils";
 
 const majorVersion = ios.MajorVersion;
 
@@ -104,7 +103,7 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
     }
 }
 
-export class SyntaxHighlighterView extends TextView implements SyntaxHighlighterViewBase, TextViewFilePrivate {
+export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlighterViewBase, TextViewFilePrivate {
     private _delegate: UITextViewDelegateImpl;
     public _isEditing: boolean;
 
@@ -226,8 +225,8 @@ export class SyntaxHighlighterView extends TextView implements SyntaxHighlighter
     }
 }
 
-codeProperty.register(SyntaxHighlighterView);
+codeProperty.register(SyntaxHighlighterTextView);
 
-languageNameProperty.register(SyntaxHighlighterView);
+languageNameProperty.register(SyntaxHighlighterTextView);
 
-themeProperty.register(SyntaxHighlighterView);
+themeProperty.register(SyntaxHighlighterTextView);
