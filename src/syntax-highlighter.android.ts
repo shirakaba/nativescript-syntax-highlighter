@@ -1,9 +1,13 @@
 import * as base from './syntax-highlighter.base';
-import { SyntaxHighlighterViewBase } from './syntax-highlighter.base';
+import { View } from '@nativescript/core/ui/core/view';
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from './syntax-highlighter.base';
 
 global.moduleMerge(base, exports);
 
-export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
+export class SyntaxHighlighterView extends View implements SyntaxHighlighterViewBase {
+    code: string;
+    languageName: string | null;
+    theme: SyntaxHighlighterTheme | string;
     private _webviewLoaded: boolean;
 
     constructor() {
@@ -73,3 +77,9 @@ export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
     }
 
 }
+
+codeProperty.register(SyntaxHighlighterView);
+
+languageNameProperty.register(SyntaxHighlighterView);
+
+themeProperty.register(SyntaxHighlighterView);

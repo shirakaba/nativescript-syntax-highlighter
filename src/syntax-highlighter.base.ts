@@ -1,9 +1,9 @@
-import { Property, View } from 'tns-core-modules/ui/core/view';
+import { Property, View } from '@nativescript/core/ui/core/view';
 
-export class SyntaxHighlighterViewBase extends View {
-    public code: string;
-    public languageName: string | null;
-    public theme: SyntaxHighlighterTheme | string;
+export interface SyntaxHighlighterViewBase extends View {
+    code: string;
+    languageName: string | null;
+    theme: SyntaxHighlighterTheme | string;
 }
 
 export enum SyntaxHighlighterTheme {
@@ -99,10 +99,3 @@ export const languageNameProperty = new Property<SyntaxHighlighterViewBase, stri
 export const themeProperty = new Property<SyntaxHighlighterViewBase, SyntaxHighlighterTheme>({
     name: 'theme'
 });
-
-
-codeProperty.register(SyntaxHighlighterViewBase);
-
-languageNameProperty.register(SyntaxHighlighterViewBase);
-
-themeProperty.register(SyntaxHighlighterViewBase);

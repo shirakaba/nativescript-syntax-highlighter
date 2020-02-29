@@ -1,10 +1,12 @@
 import { layout } from 'tns-core-modules/ui/core/view';
 import * as base from './syntax-highlighter.base';
-import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase } from './syntax-highlighter.base';
+import { TextViewBase as TextViewBaseCommon, maxLinesProperty } from "@nativescript/core/ui/text-view/text-view-common";
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from './syntax-highlighter.base';
 
 global.moduleMerge(base, exports);
 
-export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
+// export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
+export class SyntaxHighlighterView extends TextViewBaseCommon implements SyntaxHighlighterViewBase {
     private _textView: UITextView;
     private _highlightr: Highlightr;
     private _codeAttributedString: CodeAttributedString; // AKA textStorage
@@ -50,15 +52,12 @@ export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
          */
         this._codeAttributedString.highlightr.setThemeTo("pojoaque"); // Just making the default explicit.
         this._textView.backgroundColor = UIColor.alloc().initWithRedGreenBlueAlpha(25/255, 25/255, 25/255, 1.0);
-        
+
         /**
-         * TODO: extend TextViewBase (not TextView, as we need an NSTextContainer) instead of View to support
-         * all TextView properties.
-         */
-        const nativeView = UIView.new();
-        nativeView.addSubview(this._textView);
-        
-        return nativeView;
+         *
+         * @see: https://github.com/NativeScript/NativeScript/blob/864b51232b14a1b6add349f1a19659fa39f9a3a0/nativescript-core/ui/text-view/text-view.ios.ts#L122
+         **/
+        return this._textView;
     }
 
     [base.codeProperty.setNative](code: string) {
@@ -69,8 +68,8 @@ export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
         this._codeAttributedString.language = lang;
     }
 
-    [base.themeProperty.setNative](theme: any) {
-        this._highlightr.setThemeTo(theme);
+    [base.themeProperty.setNative](themeName: string) {
+        this._highlightr.setThemeTo(themeName);
         const nativeTheme = (this._highlightr as any).theme;
         if (nativeTheme && nativeTheme.themeBackgroundColor) {
             this._textView.backgroundColor = nativeTheme.themeBackgroundColor;
@@ -94,3 +93,9 @@ export class SyntaxHighlighterView extends SyntaxHighlighterViewBase {
         }
     }
 }
+
+codeProperty.register(SyntaxHighlighterView);
+
+languageNameProperty.register(SyntaxHighlighterView);
+
+themeProperty.register(SyntaxHighlighterView);
