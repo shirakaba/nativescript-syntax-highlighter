@@ -132,7 +132,21 @@ export const suggestedTextToFillOnTabPressProperty = new Property<SyntaxHighligh
     defaultValue: '',
 });
 
+class NoScrollAnimationUITextView extends UITextView {
+    // see https://github.com/NativeScript/NativeScript/issues/6863
+    // UITextView internally scrolls the text you are currently typing to visible when newline character
+    // is typed but the scroll animation is not needed because at the same time we are expanding
+    // the textview (setting its frame)
+    public setContentOffsetAnimated(contentOffset: CGPoint, animated: boolean): void {
+        super.setContentOffsetAnimated(contentOffset, false);
+    }
+}
+
 export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlighterViewBase, TextViewFilePrivate {
+    public nativeView: UITextView;
+    public nativeViewProtected: UITextView;
+    public nativeTextViewProtected: UITextView;
+
     private _delegate: UITextViewDelegateImpl;
     public _isEditing: boolean;
 
@@ -168,12 +182,13 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         this._codeAttributedString.addLayoutManager(this._layoutManager);
 
         this._textContainer = NSTextContainer.alloc().initWithSize(CGRectZero.size);
-        this._textContainer.heightTracksTextView = true;
-        this._textContainer.widthTracksTextView = true;
+        // this._textContainer.heightTracksTextView = true;
+        // this._textContainer.widthTracksTextView = true;
         this._layoutManager.addTextContainer(this._textContainer);
     
-        const uiTextView: UITextView = UITextView.alloc().initWithFrameTextContainer(CGRectZero, this._textContainer);
-        uiTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+        const uiTextView: UITextView = NoScrollAnimationUITextView.alloc().initWithFrameTextContainer(CGRectZero, this._textContainer);
+
+        // uiTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
         uiTextView.autocorrectionType = UITextAutocorrectionType.No;
         uiTextView.autocapitalizationType = UITextAutocapitalizationType.None;
         uiTextView.textColor = UIColor.alloc().initWithWhiteAlpha(0.8, 1.0);
@@ -250,22 +265,27 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         this.suggestedTextToFillOnTabPress = value;
     }
 
-    /** Seems like we don't need this, because SyntaxHighlighterTextView acccepts no children..? */
-    // public onLayout(left: number, top: number, right: number, bottom: number): void {
-    //     console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView`, this.nativeView);
-    //     super.onLayout(left, top, right, bottom);
+    /** Seems like we don't need this, because SyntaxHighlighterTextView acccepts no children..?
+     * The left, top, right, bottom values are measured in pixels (not dip). Have to divide by 2 on iPhone 8 simulator to match up with the CGRect.
+    */
+    public onLayout(left: number, top: number, right: number, bottom: number): void {
+        // console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView.frame ${JSON.stringify(this.nativeView.frame)}; this.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)}`, );
+        super.onLayout(left, top, right, bottom);
 
-    //     console.log(`[SyntaxHighlighterTextView] 2 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView`, this.nativeView);
+        /* As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0. */
+        console.log(`[SyntaxHighlighterTextView] 2 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
 
-    //     /* I don't understand this part... */
-    //     this.nativeViewProtected.frame = this.nativeView.bounds;
+        /* I don't understand this part... */
+        // this.nativeViewProtected.frame = this.nativeView.bounds;
 
-    //     /* this._textContainer can be regarded as a child. Hoping that heightTracksTextView and widthTracksTextView does the job, though. */
-    //     // this._textContainer.size.width = this.nativeView.frame.size.width;
-    //     // this._textContainer.size.height = this.nativeView.frame.size.height;
+        /* this._textContainer can be regarded as a child. Hoping that heightTracksTextView and widthTracksTextView does the job, though. */
+        this._textContainer.size.width = this.nativeView.frame.size.width;
+        this._textContainer.size.height = this.nativeView.frame.size.height;
 
-    //     this.nativeViewProtected.setNeedsLayout();
-    // }
+        console.log(`[SyntaxHighlighterTextView] 3 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
+
+        this.nativeViewProtected.setNeedsLayout();
+    }
 
     /** Default implementation is probably sufficient. */
     // public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
