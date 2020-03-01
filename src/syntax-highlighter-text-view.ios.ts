@@ -168,6 +168,8 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         this._codeAttributedString.addLayoutManager(this._layoutManager);
 
         this._textContainer = NSTextContainer.alloc().initWithSize(CGRectZero.size);
+        this._textContainer.heightTracksTextView = true;
+        this._textContainer.widthTracksTextView = true;
         this._layoutManager.addTextContainer(this._textContainer);
     
         const uiTextView: UITextView = UITextView.alloc().initWithFrameTextContainer(CGRectZero, this._textContainer);
@@ -248,22 +250,33 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         this.suggestedTextToFillOnTabPress = value;
     }
 
-    public onLayout(left: number, top: number, right: number, bottom: number): void {
-        super.onLayout(left, top, right, bottom);
-        this.nativeViewProtected.frame = this.nativeView.bounds;
-        this._textContainer.size.width = this.nativeView.frame.size.width;
-        this._textContainer.size.height = this.nativeView.frame.size.height;
-        this.nativeViewProtected.setNeedsLayout();
-    }
+    /** Seems like we don't need this, because SyntaxHighlighterTextView acccepts no children..? */
+    // public onLayout(left: number, top: number, right: number, bottom: number): void {
+    //     console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView`, this.nativeView);
+    //     super.onLayout(left, top, right, bottom);
 
-    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-        const nativeView = this.nativeView;
-        if (nativeView) {
-            const width = layout.getMeasureSpecSize(widthMeasureSpec);
-            const height = layout.getMeasureSpecSize(heightMeasureSpec);
-            this.setMeasuredDimension(width, height);
-        }
-    }
+    //     console.log(`[SyntaxHighlighterTextView] 2 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView`, this.nativeView);
+
+    //     /* I don't understand this part... */
+    //     this.nativeViewProtected.frame = this.nativeView.bounds;
+
+    //     /* this._textContainer can be regarded as a child. Hoping that heightTracksTextView and widthTracksTextView does the job, though. */
+    //     // this._textContainer.size.width = this.nativeView.frame.size.width;
+    //     // this._textContainer.size.height = this.nativeView.frame.size.height;
+
+    //     this.nativeViewProtected.setNeedsLayout();
+    // }
+
+    /** Default implementation is probably sufficient. */
+    // public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
+    //     const nativeView = this.nativeView;
+    //     if (nativeView) {
+    //         const width = layout.getMeasureSpecSize(widthMeasureSpec);
+    //         const height = layout.getMeasureSpecSize(heightMeasureSpec);
+    //         console.log(`[SyntaxHighlighterTextView] onMeasure width ${width}, height ${height}`);
+    //         this.setMeasuredDimension(width, height);
+    //     }
+    // }
 }
 
 codeProperty.register(SyntaxHighlighterTextView);
