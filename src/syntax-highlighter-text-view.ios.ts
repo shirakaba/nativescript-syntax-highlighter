@@ -274,24 +274,26 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
      * 
      * FIXME: It seems that, upon rotation, the textContainer shifts down by this.nativeView.bounds.origin.y (the scrollY).
     */
-    public onLayout(left: number, top: number, right: number, bottom: number): void {
-        // console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView.frame ${JSON.stringify(this.nativeView.frame)}; this.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)}`, );
-        super.onLayout(left, top, right, bottom);
+    // public onLayout(left: number, top: number, right: number, bottom: number): void {
+    //     // console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView.frame ${JSON.stringify(this.nativeView.frame)}; this.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)}`, );
+    //     super.onLayout(left, top, right, bottom);
 
-        /* As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0. */
-        // console.log(`[SyntaxHighlighterTextView] 2 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
+    //     /* As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0. */
+    //     // console.log(`[SyntaxHighlighterTextView] 2 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
 
-        /* I don't understand this part... */
-        // this.nativeViewProtected.frame = this.nativeView.bounds;
+    //     /* I don't understand this part... */
+    //     // this.nativeViewProtected.frame = this.nativeView.bounds;
 
-        /* Hoping that heightTracksTextView and widthTracksTextView makes this redundant – in any case, height doesn't seem to ever react to this. */
-        // this._textContainer.size.width = this.nativeView.frame.size.width;
-        // this._textContainer.size.height = this.nativeView.frame.size.height;
+    //     /* Hoping that heightTracksTextView and widthTracksTextView makes this redundant – in any case, height doesn't seem to ever react to this. */
+    //     // this._textContainer.size.width = this.nativeView.frame.size.width;
+    //     // this._textContainer.size.height = this.nativeView.frame.size.height;
 
-        console.log(`[SyntaxHighlighterTextView] 3 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}\n\tthis._textContainer.lineFragmentPadding ${JSON.stringify(this._textContainer.lineFragmentPadding)}`, );
-
-        this.nativeViewProtected.setNeedsLayout();
-    }
+        
+    //     console.log(`[SyntaxHighlighterTextView] 3 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}\n\t`, );
+        
+    //     // this._layoutManager.textContainerForGlyphAtIndexEffectiveRange(0, NSRange)
+    //     this.nativeViewProtected.setNeedsLayout();
+    // }
 
     /** Default implementation is probably sufficient. */
     // public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
