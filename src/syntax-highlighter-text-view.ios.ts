@@ -182,8 +182,8 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         this._codeAttributedString.addLayoutManager(this._layoutManager);
 
         this._textContainer = NSTextContainer.alloc().initWithSize(CGRectZero.size);
-        // this._textContainer.heightTracksTextView = true;
-        // this._textContainer.widthTracksTextView = true;
+        this._textContainer.heightTracksTextView = true;
+        this._textContainer.widthTracksTextView = true;
         this._layoutManager.addTextContainer(this._textContainer);
     
         const uiTextView: UITextView = NoScrollAnimationUITextView.alloc().initWithFrameTextContainer(CGRectZero, this._textContainer);
@@ -265,24 +265,30 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         this.suggestedTextToFillOnTabPress = value;
     }
 
-    /** Seems like we don't need this, because SyntaxHighlighterTextView acccepts no children..?
+    /** 
+     * This is normally for laying out children. While SyntaxHighlighterTextView acccepts no children, we may need to synchronise the textContainer.
+     * 
      * The left, top, right, bottom values are measured in pixels (not dip). Have to divide by 2 on iPhone 8 simulator to match up with the CGRect.
+     * 
+     * As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0.
+     * 
+     * FIXME: It seems that, upon rotation, the textContainer shifts down by this.nativeView.bounds.origin.y (the scrollY).
     */
     public onLayout(left: number, top: number, right: number, bottom: number): void {
         // console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView.frame ${JSON.stringify(this.nativeView.frame)}; this.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)}`, );
         super.onLayout(left, top, right, bottom);
 
         /* As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0. */
-        console.log(`[SyntaxHighlighterTextView] 2 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
+        // console.log(`[SyntaxHighlighterTextView] 2 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
 
         /* I don't understand this part... */
         // this.nativeViewProtected.frame = this.nativeView.bounds;
 
-        /* this._textContainer can be regarded as a child. Hoping that heightTracksTextView and widthTracksTextView does the job, though. */
-        this._textContainer.size.width = this.nativeView.frame.size.width;
-        this._textContainer.size.height = this.nativeView.frame.size.height;
+        /* Hoping that heightTracksTextView and widthTracksTextView makes this redundant – in any case, height doesn't seem to ever react to this. */
+        // this._textContainer.size.width = this.nativeView.frame.size.width;
+        // this._textContainer.size.height = this.nativeView.frame.size.height;
 
-        console.log(`[SyntaxHighlighterTextView] 3 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
+        console.log(`[SyntaxHighlighterTextView] 3 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}\n\tthis._textContainer.lineFragmentPadding ${JSON.stringify(this._textContainer.lineFragmentPadding)}`, );
 
         this.nativeViewProtected.setNeedsLayout();
     }
