@@ -108,7 +108,7 @@ export class _SyntaxHighlighterTextView<
 
 type OwnPropsWithoutForwardedRef = PropsWithoutForwardedRef<SyntaxHighlighterTextViewComponentProps<NativeScriptSyntaxHighlighterTextView>>;
 
-export const SyntaxHighlighterTextView: React.ComponentType<
+export const $SyntaxHighlighterTextView: React.ComponentType<
     OwnPropsWithoutForwardedRef & React.ClassAttributes<NativeScriptSyntaxHighlighterTextView>
 > = React.forwardRef<NativeScriptSyntaxHighlighterTextView, OwnPropsWithoutForwardedRef>(
     (props: React.PropsWithChildren<OwnPropsWithoutForwardedRef>, ref: React.RefObject<NativeScriptSyntaxHighlighterTextView>) => {
