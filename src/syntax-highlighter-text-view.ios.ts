@@ -92,11 +92,14 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
             }
 
             if(replacementString === "\t"){
+                console.log(`[UITextViewDelegateImpl] GOT TAB. owner.suggestedTextToFillOnTabPress: ${owner.suggestedTextToFillOnTabPress}`);
                 if(owner.suggestedTextToFillOnTabPress !== "" && owner.suggestedTextToFillOnTabPress !== textView.text){
-                    return true;
-                } else {
+                    console.log(`[UITextViewDelegateImpl] GOT TAB. Setting and returning false...`);
                     textView.text = owner.suggestedTextToFillOnTabPress;
-                    return false;                    
+                    return false;
+                } else {
+                    console.log(`[UITextViewDelegateImpl] GOT TAB. Returning true...`);
+                    return true;
                 }
             }
 
