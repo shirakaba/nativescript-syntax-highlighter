@@ -82,21 +82,13 @@ export class _SyntaxHighlighterTextView<
             console.warn(`[SyntaxHighlighterTextView] formattedText will be ignored in SyntaxHighlighterTextView.`);
         }
 
-        if (text && code) {
-            console.warn(`[SyntaxHighlighterTextView] Both text and code provided; shall use text.`);
-        }
-
-        const textContent = {
-            [code ? "code" : "text"]: code || text,
-        };
-
         return React.createElement(
             elementKey,
             {
                 ...rest,
                 language,
                 theme,
-                ...textContent,
+                text,
                 ref: forwardedRef || this.myRef,
             } as any,
             children
