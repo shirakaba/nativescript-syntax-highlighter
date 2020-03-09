@@ -9,7 +9,6 @@ import { Container, HostContext } from "react-nativescript/dist/shared/HostConfi
 // import { TextView as NativeScriptTextView } from "@nativescript/core/ui/text-view";
 
 interface SyntaxHighlighterTextViewProps {
-    code?: string,
     language?: string,
     theme?: string,
     returnDismissesKeyboard?: boolean,
@@ -49,7 +48,6 @@ export class _SyntaxHighlighterTextView<
         const {
             forwardedRef,
 
-            code,
             language,
             theme,
 

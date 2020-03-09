@@ -1,10 +1,9 @@
-import { layout } from 'tns-core-modules/ui/core/view';
 import * as base from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
 import { TextView } from "@nativescript/core/ui/text-view";
 import { textProperty } from "@nativescript/core/ui/editable-text-base";
 import { ScrollEventData } from "@nativescript/core/ui/scroll-view";
 import { Property, View } from '@nativescript/core/ui/core/view';
-import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, languageNameProperty, themeProperty } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
 import { ios } from "@nativescript/core/utils/utils";
 
 const editableTextBasePrivate: any = require("@nativescript/core/ui/editable-text-base");
@@ -244,8 +243,54 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
         return super._refreshHintState(hint, text);
     }
 
-    [base.codeProperty.setNative](code: string) {
-        this.nativeViewProtected.attributedText = this._highlightr.highlightAsFastRender(code, this.languageName, false);
+    setFormattedTextDecorationAndTransform() {
+        const attrText: NSMutableAttributedString = this._highlightr.highlightAsFastRender(this.text, this.languageName, false).mutableCopy();
+        // TODO: letterSpacing should be applied per Span.
+        if (this.letterSpacing !== 0) {
+            attrText.addAttributeValueRange(NSKernAttributeName, this.letterSpacing * this.nativeTextViewProtected.font.pointSize, { location: 0, length: attrText.length });
+        }
+
+        if (this.style.lineHeight) {
+            const paragraphStyle = NSMutableParagraphStyle.alloc().init();
+            paragraphStyle.lineSpacing = this.lineHeight;
+            // make sure a possible previously set text alignment setting is not lost when line height is specified
+            if (this.nativeTextViewProtected instanceof UIButton) {
+                paragraphStyle.alignment = (<UIButton>this.nativeTextViewProtected).titleLabel.textAlignment;
+            } else {
+                paragraphStyle.alignment = (<UITextField | UITextView | UILabel>this.nativeTextViewProtected).textAlignment;
+            }
+
+            if (this.nativeTextViewProtected instanceof UILabel) {
+                // make sure a possible previously set line break mode is not lost when line height is specified
+                paragraphStyle.lineBreakMode = this.nativeTextViewProtected.lineBreakMode;
+            }
+            attrText.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, { location: 0, length: attrText.length });
+        } else if (this.nativeTextViewProtected instanceof UITextView) {
+            const paragraphStyle = NSMutableParagraphStyle.alloc().init();
+            paragraphStyle.alignment = (<UITextView>this.nativeTextViewProtected).textAlignment;
+            attrText.addAttributeValueRange(NSParagraphStyleAttributeName, paragraphStyle, { location: 0, length: attrText.length });
+        }
+
+        if (this.nativeTextViewProtected instanceof UIButton) {
+            this.nativeTextViewProtected.setAttributedTitleForState(attrText, UIControlState.Normal);
+        }
+        else {
+            if (majorVersion >= 13 && (UIColor as any).labelColor) {
+                this.nativeTextViewProtected.textColor = (UIColor as any).labelColor;
+            }
+
+            this.nativeTextViewProtected.attributedText = attrText;
+        }
+
+        // this.nativeTextViewProtected.attributedText = this._highlightr.highlightAsFastRender(this.text, this.languageName, false);
+        this.nativeTextViewProtected.attributedText = attrText;
+    }
+
+    /**
+     * SyntaxHighlighterView achieves rich text by using attributedText, so we'll defer to the equivalent formattedText method here.
+     */
+    setTextDecorationAndTransform() {
+        return this.setFormattedTextDecorationAndTransform();
     }
 
     [base.languageNameProperty.setNative](lang: string | null) {
@@ -267,50 +312,7 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
     [suggestedTextToFillOnTabPressProperty.setNative](value: string = "") {
         this.suggestedTextToFillOnTabPress = value;
     }
-
-    /** 
-     * This is normally for laying out children. While SyntaxHighlighterTextView acccepts no children, we may need to synchronise the textContainer.
-     * 
-     * The left, top, right, bottom values are measured in pixels (not dip). Have to divide by 2 on iPhone 8 simulator to match up with the CGRect.
-     * 
-     * As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0.
-     * 
-     * FIXME: It seems that, upon rotation, the textContainer shifts down by this.nativeView.bounds.origin.y (the scrollY).
-    */
-    // public onLayout(left: number, top: number, right: number, bottom: number): void {
-    //     // console.log(`[SyntaxHighlighterTextView] 1 onLayout left ${left}, top ${top}, right ${right}, bottom ${bottom}; this.nativeView.frame ${JSON.stringify(this.nativeView.frame)}; this.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)}`, );
-    //     super.onLayout(left, top, right, bottom);
-
-    //     /* As the TextView scrolls, bounds.origin represents the scroll offset, while frame.origin remains 0,0. */
-    //     // console.log(`[SyntaxHighlighterTextView] 2 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}`, );
-
-    //     /* I don't understand this part... */
-    //     // this.nativeViewProtected.frame = this.nativeView.bounds;
-
-    //     /* Hoping that heightTracksTextView and widthTracksTextView makes this redundant – in any case, height doesn't seem to ever react to this. */
-    //     // this._textContainer.size.width = this.nativeView.frame.size.width;
-    //     // this._textContainer.size.height = this.nativeView.frame.size.height;
-
-        
-    //     console.log(`[SyntaxHighlighterTextView] 3 onLayout\n\tleft ${left}, top ${top}, right ${right}, bottom ${bottom};\n\tthis.nativeView.frame ${JSON.stringify(this.nativeView.frame)};\n\tthis.nativeView.bounds ${JSON.stringify(this.nativeView.bounds)};\n\tthis._textContainer.size ${JSON.stringify(this._textContainer.size)}\n\t`, );
-        
-    //     // this._layoutManager.textContainerForGlyphAtIndexEffectiveRange(0, NSRange)
-    //     this.nativeViewProtected.setNeedsLayout();
-    // }
-
-    /** Default implementation is probably sufficient. */
-    // public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-    //     const nativeView = this.nativeView;
-    //     if (nativeView) {
-    //         const width = layout.getMeasureSpecSize(widthMeasureSpec);
-    //         const height = layout.getMeasureSpecSize(heightMeasureSpec);
-    //         console.log(`[SyntaxHighlighterTextView] onMeasure width ${width}, height ${height}`);
-    //         this.setMeasuredDimension(width, height);
-    //     }
-    // }
 }
-
-codeProperty.register(SyntaxHighlighterTextView);
 
 languageNameProperty.register(SyntaxHighlighterTextView);
 
