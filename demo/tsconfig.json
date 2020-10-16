@@ -1,25 +1,17 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "declaration": false,
-        "removeComments": true,
-        "noLib": false,
-        "emitDecoratorMetadata": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "es2017",
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noEmitHelpers": true,
+        "noEmitOnError": true,
+        "jsx": "react",
         "lib": [
             "es6",
             "dom"
         ],
-        "pretty": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "noEmitHelpers": true,
-        "noEmitOnError": false,
-        "noImplicitAny": false,
-        "noImplicitReturns": true,
-        "noImplicitUseStrict": false,
-        "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "paths": {
             "*": [

@@ -1,16 +1,11 @@
 {
     "name": "nativescript-syntax-highlighter",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "description": "Your awesome NativeScript plugin.",
     "main": "syntax-highlighter-view",
     "typings": "syntax-highlighter-view.d.ts",
-    "nativescript": {
-        "platforms": {
-            "android": "5.0.0",
-            "ios": "5.0.0"
-        }
-    },
     "scripts": {
+        "pp": "patch-package",
         "tsc": "tsc",
         "build": "npm run tsc && npm run build.native",
         "build.native": "node scripts/build-native.js",
@@ -44,13 +39,14 @@
     "homepage": "https://github.com/shirakaba/nativescript-syntax-highlighter",
     "readmeFilename": "README.md",
     "devDependencies": {
+        "@types/react": "16.9.34",
         "prompt": "^1.0.0",
         "rimraf": "^2.6.2",
         "semver": "^5.6.0",
-        "tns-core-modules": "^6.4.2",
-        "tns-platform-declarations": "^6.4.2",
+        "@nativescript/core": "~7.0.0",
+        "@nativescript/types": "7.0.1",
         "tslint": "^5.11.0",
-        "typescript": "^3.5.3"
+        "typescript": "^3.9.5"
     },
     "dependencies": {},
     "bootstrapper": "nativescript-plugin-seed"

@@ -1,5 +1,5 @@
-var Syntaxhighlighter = require("nativescript-syntaxhighlighter").Syntaxhighlighter;
-var syntaxhighlighter = new Syntaxhighlighter();
+const Syntaxhighlighter = require("nativescript-syntax-highlighter").Syntaxhighlighter;
+const syntaxhighlighter = new Syntaxhighlighter();
 
 describe("greet function", function() {
     it("exists", function() {
