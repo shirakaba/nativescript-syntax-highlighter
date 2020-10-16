@@ -1,40 +1,73 @@
-# Your Plugin Name
+# NativeScript Syntax Highlighter (AKA SyntaxHighlighterTextView)
 
-Add your plugin badges here. See [nativescript-urlhandler](https://github.com/hypery2k/nativescript-urlhandler) for example.
+A Text View (SyntaxHighlighterTextView, for iOS only) or View (SyntaxHighlighterView for Android) that can highlight syntax!
 
-Then describe what's the purpose of your plugin. 
+* SyntaxHighlighterTextView, for iOS only (a TextView)
+* SyntaxHighlighterView, for iOS (a View that acts a lot like a TextView) and Android (a WebView)
 
-In case you develop UI plugin, this is where you can add some screenshots.
+## State of project
 
-## (Optional) Prerequisites / Requirements
-
-Describe the prerequisites that the user need to have installed before using your plugin. See [nativescript-firebase plugin](https://github.com/eddyverbruggen/nativescript-plugin-firebase) for example.
+I'm not actively maintaining this. I use the SyntaxHighlighterTextView in [NSIDE](https://github.com/shirakaba/nside), for iOS, via React NativeScript, and that's it. It's likely broken in various areas.
 
 ## Installation
 
-Describe your plugin installation steps. Ideally it would be something like:
+For all NativeScript platforms, you'll first need to begin with:
 
-```javascript
-tns plugin add <your-plugin-name>
+```sh
+tns plugin add nativescript-syntax-highlighter
 ```
 
-## Usage 
+### With React
 
-Describe any usage specifics for your plugin. Give examples for Android, iOS, Angular if needed. See [nativescript-drop-down](https://www.npmjs.com/package/nativescript-drop-down) for example.
-	
-	```javascript
-    Usage code snippets here
-    ```)
+For React, you'll additionally need to do this:
 
-## API
+```ts
+import { registerElement } from "react-nativescript";
 
-Describe your plugin methods and properties here. See [nativescript-feedback](https://github.com/EddyVerbruggen/nativescript-feedback) for example.
-    
-| Property | Default | Description |
-| --- | --- | --- |
-| some property | property default value | property description, default values, etc.. |
-| another property | property default value | property description, default values, etc.. |
-    
-## License
+registerElement('syntaxHighlighterTextView', () => require('nativescript-syntax-highlighter').Gradient);
+```
 
-Apache License Version 2.0, January 2004
+
+## Usage
+
+### With NativeScript Core
+
+See `demo` in the repo root.
+
+### With React
+
+```tsx
+import * as React from "react";
+import { useState } from "react";
+import { SyntaxHighlighterTextView } from "nativescript-syntax-highlighter";
+import { EventData, TextView, ContentView } from "@nativescript/core";
+
+function Example({}){
+    const [textContent, setTextContent] = useState(0);
+
+    return (
+        <SyntaxHighlighterTextView
+            height="100%"
+            width="100%"
+            autocorrect={false}
+            autocapitalizationType={"none"}
+            returnDismissesKeyboard={false}
+            suggestedTextToFillOnTabPress={() => ""}
+            onTextChange={(args: EventData) => {
+                const { text } = args.object as TextView;
+                console.log(`[onSyntaxViewTextChange] ${text}`);
+
+                setTextContent(text);
+            }}
+            text={textContent}
+            style={{
+                backgroundColor: "rgb(25,25,25)",
+                color: "rgba(255,204,204,0.8)",
+                padding: 8,
+                margin: 8,
+                fontSize: 22,
+            }}
+        />
+    );
+}
+```

@@ -1,4 +1,4 @@
-import { Property, View } from '@nativescript/core/ui/core/view';
+import { Property, View } from '@nativescript/core';
 
 export interface SyntaxHighlighterViewBase extends View {
     code: string;

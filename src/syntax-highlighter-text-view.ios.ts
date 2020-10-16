@@ -1,17 +1,15 @@
-import * as base from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
-import { TextView } from "@nativescript/core/ui/text-view";
-import { textProperty } from "@nativescript/core/ui/editable-text-base";
-import { ScrollEventData } from "@nativescript/core/ui/scroll-view";
-import { Property, View } from '@nativescript/core/ui/core/view';
-import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, languageNameProperty, themeProperty } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
-import { ios } from "@nativescript/core/utils/utils";
+import * as base from './syntax-highlighter-view.base';
+import { textProperty } from "@nativescript/core/ui/text-base";
+import { Property, ScrollEventData, TextView } from '@nativescript/core';
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, languageNameProperty, themeProperty } from './syntax-highlighter-view.base';
+import { iOSNativeHelper } from "@nativescript/core/utils";
 
 const editableTextBasePrivate: any = require("@nativescript/core/ui/editable-text-base");
 const { _updateCharactersInRangeReplacementString } = editableTextBasePrivate;
 
 global.moduleMerge(base, exports);
 
-const majorVersion = ios.MajorVersion;
+const majorVersion = iOSNativeHelper.MajorVersion;
 
 interface TextViewFilePrivate extends TextView {
     _isEditing: boolean;

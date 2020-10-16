@@ -1,7 +1,7 @@
-import { layout } from 'tns-core-modules/ui/core/view';
-import * as base from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
+import { getMeasureSpecSize } from '@nativescript/core/utils/layout-helper';
+import * as base from './syntax-highlighter-view.base';
 import { View } from "@nativescript/core";
-import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase } from './syntax-highlighter-view.base';
 
 global.moduleMerge(base, exports);
 
@@ -89,8 +89,8 @@ export class SyntaxHighlighterView extends View implements SyntaxHighlighterView
     public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
         const nativeView = this.nativeView;
         if (nativeView) {
-            const width = layout.getMeasureSpecSize(widthMeasureSpec);
-            const height = layout.getMeasureSpecSize(heightMeasureSpec);
+            const width = getMeasureSpecSize(widthMeasureSpec);
+            const height = getMeasureSpecSize(heightMeasureSpec);
             this.setMeasuredDimension(width, height);
         }
     }

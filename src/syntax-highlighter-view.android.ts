@@ -1,6 +1,6 @@
-import * as base from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
+import * as base from './syntax-highlighter-view.base';
 import { View } from '@nativescript/core/ui/core/view';
-import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from 'nativescript-syntax-highlighter/syntax-highlighter-view.base';
+import { SyntaxHighlighterTheme, SyntaxHighlighterViewBase, codeProperty, languageNameProperty, themeProperty } from './syntax-highlighter-view.base';
 
 global.moduleMerge(base, exports);
 
