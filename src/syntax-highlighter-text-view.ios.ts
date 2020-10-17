@@ -184,7 +184,6 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
 
     public onUnloaded() {
         this.nativeTextViewProtected.delegate = null;
-        console.log(`!! Unloaded!`);
         super.onUnloaded();
     }
 
