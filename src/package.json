@@ -1,6 +1,8 @@
-{
+{    
     "name": "nativescript-syntax-highlighter",
-    "version": "4.0.0",
+    "nativescript": {
+    },
+    "version": "4.0.0-alpha.0",
     "description": "Your awesome NativeScript plugin.",
     "main": "syntax-highlighter-view",
     "typings": "syntax-highlighter-view.d.ts",
