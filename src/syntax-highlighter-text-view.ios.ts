@@ -16,7 +16,8 @@ interface TextViewFilePrivate extends TextView {
     showText(): void;
     _refreshHintState(hint: string, text: string): void;
 }
-
+/** @see https://github.com/NativeScript/NativeScript/blob/13decc4cfd748672b78e7234c80d6c22e4b9d57f/packages/core/ui/text-view/index.ios.ts */
+@NativeClass
 class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
     public static ObjCProtocols = [UITextViewDelegate];
 
@@ -32,7 +33,7 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
     public textViewShouldBeginEditing(textView: UITextView): boolean {
         const owner = this._owner.get();
         if (owner) {
-            owner.showText();
+            return owner.textViewShouldBeginEditing(textView);
         }
 
         return true;
@@ -41,68 +42,28 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
     public textViewDidBeginEditing(textView: UITextView): void {
         const owner = this._owner.get();
         if (owner) {
-            owner._isEditing = true;
-            owner.notify({ eventName: TextView.focusEvent, object: owner });
+            owner.textViewDidBeginEditing(textView);
         }
     }
 
-    public textViewDidEndEditing(textView: UITextView) {
+    public textViewDidEndEditing(textView: UITextView): void {
         const owner = this._owner.get();
         if (owner) {
-            if (owner.updateTextTrigger === "focusLost") {
-                textProperty.nativeValueChange(owner, textView.text);
-            }
-
-            owner._isEditing = false;
-            owner.dismissSoftInput();
-            owner._refreshHintState(owner.hint, textView.text);
+            owner.textViewDidEndEditing(textView);
         }
     }
 
-    public textViewDidChange(textView: UITextView) {
+    public textViewDidChange(textView: UITextView): void {
         const owner = this._owner.get();
         if (owner) {
-            if (owner.updateTextTrigger === "textChanged") {
-                textProperty.nativeValueChange(owner, textView.text);
-            }
-            owner.requestLayout();
+            owner.textViewDidChange(textView);
         }
     }
 
     public textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: NSRange, replacementString: string): boolean {
         const owner = this._owner.get();
         if (owner) {
-            const delta = replacementString.length - range.length;
-            if (delta > 0) {
-                if (textView.text.length + delta > owner.maxLength) {
-                    return false;
-                }
-            }
-
-            if (owner.formattedText) {
-                _updateCharactersInRangeReplacementString(owner.formattedText, range.location, range.length, replacementString);
-            }
-
-            if(replacementString === "\n" && owner.returnDismissesKeyboard){
-                textView.resignFirstResponder();
-                return false;
-            }
-
-            if(replacementString === "\t"){
-                console.log(`[UITextViewDelegateImpl] GOT TAB. owner.suggestedTextToFillOnTabPress: ${owner.suggestedTextToFillOnTabPress}`);
-                if(owner.suggestedTextToFillOnTabPress !== "" && owner.suggestedTextToFillOnTabPress !== textView.text){
-                    console.log(`[UITextViewDelegateImpl] GOT TAB. Setting and returning false...`);
-                    textView.text = owner.suggestedTextToFillOnTabPress;
-                    return false;
-                } else {
-                    console.log(`[UITextViewDelegateImpl] GOT TAB. Returning true...`);
-                    return true;
-                }
-            }
-
-            // if(owner.textViewShouldChangeTextInRangeReplacementText){
-            //     return owner.textViewShouldChangeTextInRangeReplacementText(textView, range, replacementString);
-            // }
+            return owner.textViewShouldChangeTextInRangeReplacementText(textView, range, replacementString);
         }
 
         return true;
@@ -111,13 +72,7 @@ class UITextViewDelegateImpl extends NSObject implements UITextViewDelegate {
     public scrollViewDidScroll(sv: UIScrollView): void {
         const owner = this._owner.get();
         if (owner) {
-            const contentOffset = owner.nativeViewProtected.contentOffset;
-            owner.notify(<ScrollEventData>{
-                object: owner,
-                eventName: "scroll",
-                scrollX: contentOffset.x,
-                scrollY: contentOffset.y
-            });
+            return owner.scrollViewDidScroll(sv);
         }
     }
 }
@@ -143,12 +98,14 @@ class NoScrollAnimationUITextView extends UITextView {
 }
 
 export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlighterViewBase, TextViewFilePrivate {
-    public nativeView: UITextView;
-    public nativeViewProtected: UITextView;
-    public nativeTextViewProtected: UITextView;
-
+    nativeViewProtected: UITextView;
+    nativeTextViewProtected: UITextView;
     private _delegate: UITextViewDelegateImpl;
+    _isShowingHint: boolean;
     public _isEditing: boolean;
+
+    private _hintColor = majorVersion <= 12 || !UIColor.placeholderTextColor ? UIColor.blackColor.colorWithAlphaComponent(0.22) : UIColor.placeholderTextColor;
+    private _textColor = majorVersion <= 12 || !UIColor.labelColor ? null : UIColor.labelColor;
 
     private _highlightr: Highlightr;
     private _codeAttributedString: CodeAttributedString; // AKA textStorage
@@ -211,7 +168,6 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
 
     initNativeView() {
         super.initNativeView();
-        // 
         this._delegate = UITextViewDelegateImpl.initWithOwner(new WeakRef(this));
     }
 
@@ -223,12 +179,85 @@ export class SyntaxHighlighterTextView extends TextView implements SyntaxHighlig
     // @profile
     public onLoaded() {
         super.onLoaded();
-        this.ios.delegate = this._delegate;
+        this.nativeTextViewProtected.delegate = this._delegate;
     }
 
     public onUnloaded() {
-        this.ios.delegate = null;
+        this.nativeTextViewProtected.delegate = null;
+        console.log(`!! Unloaded!`);
         super.onUnloaded();
+    }
+
+    public textViewShouldBeginEditing(textView: UITextView): boolean {
+        if (this._isShowingHint) {
+            this.showText();
+        }
+
+        return true;
+    }
+
+    public textViewDidBeginEditing(textView: UITextView): void {
+        this._isEditing = true;
+        this.notify({ eventName: TextView.focusEvent, object: this });
+    }
+
+    public textViewDidEndEditing(textView: UITextView): void {
+        if (this.updateTextTrigger === 'focusLost') {
+            textProperty.nativeValueChange(this, textView.text);
+        }
+
+        this._isEditing = false;
+        this.dismissSoftInput();
+        this._refreshHintState(this.hint, textView.text);
+    }
+
+    public textViewDidChange(textView: UITextView): void {
+        if (this.updateTextTrigger === 'textChanged') {
+            textProperty.nativeValueChange(this, textView.text);
+        }
+        this.requestLayout();
+    }
+
+    public textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: NSRange, replacementString: string): boolean {
+        const delta = replacementString.length - range.length;
+        if (delta > 0) {
+            if (textView.text.length + delta > this.maxLength) {
+                return false;
+            }
+        }
+
+        if (this.formattedText) {
+            _updateCharactersInRangeReplacementString(this.formattedText, range.location, range.length, replacementString);
+        }
+
+        if (replacementString === "\n" && this.returnDismissesKeyboard) {
+            textView.resignFirstResponder();
+            return false;
+        }
+
+        if (replacementString === "\t") {
+            console.log(`[UITextViewDelegateImpl] GOT TAB. this.suggestedTextToFillOnTabPress: ${this.suggestedTextToFillOnTabPress}`);
+            if (this.suggestedTextToFillOnTabPress !== "" && this.suggestedTextToFillOnTabPress !== textView.text) {
+                console.log(`[UITextViewDelegateImpl] GOT TAB. Setting and returning false...`);
+                textView.text = this.suggestedTextToFillOnTabPress;
+                return false;
+            } else {
+                console.log(`[UITextViewDelegateImpl] GOT TAB. Returning true...`);
+                return true;
+            }
+        }
+
+        return true;
+    }
+
+    public scrollViewDidScroll(sv: UIScrollView): void {
+        const contentOffset = this.nativeViewProtected.contentOffset;
+        this.notify(<ScrollEventData>{
+            object: this,
+            eventName: 'scroll',
+            scrollX: contentOffset.x,
+            scrollY: contentOffset.y,
+        });
     }
 
     public showText() {
